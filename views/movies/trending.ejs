@@ -19,13 +19,14 @@
                         </div>
                         <div class="card__content">
                             <h2 class="product__price">Rating: <%= movie.vote_average.toFixed(1) %>/10</h2>
-                            <p class="product__description"><%= movie.overview %></p>
+                            <p class="product__description truncate"><%= movie.overview %></p>
                         </div>
                     </article>
                 <% } %>
             </div>
         <% } else { %>
-            <h1>No Products Found!</h1>
+            <h1>No Movies Found!</h1>
         <% } %>
+        <%- include('../includes/prev-next-button.ejs') %>
     </main>
 <%- include('../includes/end.ejs') %>

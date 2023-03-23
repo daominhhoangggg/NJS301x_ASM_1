@@ -7,16 +7,16 @@
    <%- include('../includes/navigation.ejs') %>
 
     <main>
-        <form class="product-form" action="/api/movies/genre" method="POST">
-            <div class="form-control">
-                <label for=genre">Choose Genre</label>
-                <select name="genreName" id="genreName">
-                    <% for (let genre of genres) { %> 
-                        <option><%= genre.name %></option>
-                    <% } %>
-                </select>
+        <% if (genres.length > 0) { %>
+            <div class="grid">
+                <% for (let genre of genres) { %>
+                    <article class="card product-item">
+                        <div class="product__description">
+                            <a href="/api/movies/discover/<%= genre.id %>" class="btn" style="display: flex;"><%= genre.name %></a>
+                        </div>
+                    </article>
+                <% } %>
             </div>
-            <button class="btn" type="submit">Filter</button>
-        </form>
+        <% } %>
     </main>
 <%- include('../includes/end.ejs') %>

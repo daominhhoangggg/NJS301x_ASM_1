@@ -9,12 +9,6 @@ const p = path.join(
   "movieList.json"
 );
 
-const r = path.join(
-  path.dirname(process.mainModule.filename),
-  "data",
-  "result.json"
-);
-
 const getMoviesFromFile = (cb) => {
   fs.readFile(p, (err, fileContent) => {
     if (err) {
@@ -28,46 +22,27 @@ const getMoviesFromFile = (cb) => {
   });
 };
 
-const getResult = (cb) => {
-  fs.readFile(r, (err, fileContent) => {
-    if (err) {
-      cb([]);
-    } else {
-      const result = JSON.parse(fileContent);
-      cb(result);
-    }
-  });
-};
-
-const saveResult = (result) => {
-  const res = [...result];
-  fs.writeFile(r, JSON.stringify(res), (err) => {
-    console.log(err);
-  });
-};
-
 module.exports = class Movie {
   static fetchAll(cb) {
     getMoviesFromFile(cb);
   }
 
-  static fetchResult(cb) {
-    getResult(cb);
-  }
-
-  static save(m) {
-    saveResult(m);
-  }
-
-  static findByGenre(genreName, cb) {
+  static findByGenre(genreId, cb) {
     Genre.fetchGenre((genre) => {
-      const selectedGenre = genre.find((g) => g.name === genreName);
+      const selectedGenre = genre.find((g) => g.id === +genreId);
       getMoviesFromFile((movies) => {
         const result = movies.filter((movie) =>
           movie.genre_ids.includes(selectedGenre.id)
         );
         cb(result);
       });
+    });
+  }
+
+  static findById(id, cb) {
+    getMoviesFromFile((movies) => {
+      const movie = movies.find((m) => m.id === id);
+      cb(movie);
     });
   }
 };

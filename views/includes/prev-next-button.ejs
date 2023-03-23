@@ -1,0 +1,8 @@
+<div>
+    <% if (page > 1) { %> 
+        <a href="/api<%= path %>?page=<%= page - 1 %>" class="btn">Previous</a>
+    <% } %>
+    <% if (page < totalPage) { %>
+        <a href="/api<%= path %>?page=<%= page + 1 %>" class="btn">Next</a>
+    <% } %>
+</div>

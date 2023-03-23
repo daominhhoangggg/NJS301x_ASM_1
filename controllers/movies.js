@@ -2,45 +2,50 @@ const Movie = require("../models/movie");
 const Genre = require("../models/genre");
 
 //Movies
-exports.getAll = (req, res, next) => {
-  Movie.fetchAll((movies) => {
-    res.render("movies/trending", {
-      movies: movies,
-      pageTitle: "All Movies",
-      path: "/movies/all",
-      baseUrl: "https://image.tmdb.org/t/p/w200",
-    });
-  });
-};
-
 exports.getTrending = (req, res, next) => {
+  let page = req.query.page;
+  if (!page) {
+    page = 1;
+  } else {
+    page = +page;
+  }
   Movie.fetchAll((movies) => {
-    const trending = [...movies];
-    trending.sort((a, b) => b.popularity - a.popularity);
+    movies.sort((a, b) => b.popularity - a.popularity);
+    const totalPage = movies.length;
+    const trending = movies.slice((page - 1) * 4, 4 * page);
+    console.log(totalPage);
     res.render("movies/trending", {
       movies: trending,
-      pageTitle: "Trending Movies",
+      pageTitle: "Trending",
       path: "/movies/trending",
       baseUrl: "https://image.tmdb.org/t/p/w200",
+      page: page,
+      totalPage: totalPage,
     });
   });
 };
 
 exports.getTopRate = (req, res, next) => {
+  let page = req.query.page;
+  if (!page) {
+    page = 1;
+  } else {
+    page = +page;
+  }
   Movie.fetchAll((movies) => {
-    const topRate = [...movies];
-    topRate.sort((a, b) => b.vote_average - a.vote_average);
+    movies.sort((a, b) => b.vote_average - a.vote_average);
+    const topRate = movies.slice((page - 1) * 4, 4 * page);
     res.render("movies/trending", {
       movies: topRate,
-      pageTitle: "Top Rate Movies",
+      pageTitle: "Top Rate",
       path: "/movies/top-rate",
       baseUrl: "https://image.tmdb.org/t/p/w200",
+      page: page,
     });
   });
 };
 
 //Discover
-
 exports.getDiscover = (req, res, next) => {
   Genre.fetchGenre((genres) => {
     res.render("movies/discover", {
@@ -51,21 +56,27 @@ exports.getDiscover = (req, res, next) => {
   });
 };
 
-exports.postDiscover = (req, res, next) => {
-  const genreName = req.body.genreName;
-  Movie.findByGenre(genreName, (movies) => {
-    Movie.save(movies);
-    res.redirect("/api/movies/genre");
-  });
-};
-
-exports.getGenre = (req, res, next) => {
-  Movie.fetchResult((movies) => {
+exports.getResult = (req, res, next) => {
+  const genreId = req.params.genreId;
+  let page = req.query.page;
+  if (!page) {
+    page = 1;
+  } else {
+    page = +page;
+  }
+  Movie.findByGenre(genreId, (movies) => {
+    const totalPage = movies.length / 16;
+    console.log(totalPage);
+    const discover = movies.slice((page - 1) * 16, 16 * page);
     res.render("movies/trending", {
-      movies: movies,
+      movies: discover,
       pageTitle: "Discover",
-      path: "/movies/discover",
+      path: `/movies/discover/${genreId}`,
       baseUrl: "https://image.tmdb.org/t/p/w200",
+      page: page,
+      totalPage: totalPage,
     });
   });
 };
+
+//Video
