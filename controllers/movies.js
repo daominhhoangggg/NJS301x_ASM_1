@@ -1,6 +1,12 @@
 const Movie = require("../models/movie");
 const Genre = require("../models/genre");
 
+const paging = (movies, page, cb) => {
+  const totalPage = Math.ceil(movies.length / 16);
+  const result = movies.slice((page - 1) * 16, 16 * page);
+  cb(result, totalPage);
+};
+
 //Movies
 exports.getTrending = (req, res, next) => {
   let page = req.query.page;
@@ -11,16 +17,15 @@ exports.getTrending = (req, res, next) => {
   }
   Movie.fetchAll((movies) => {
     movies.sort((a, b) => b.popularity - a.popularity);
-    const totalPage = movies.length;
-    const trending = movies.slice((page - 1) * 4, 4 * page);
-    console.log(totalPage);
-    res.render("movies/trending", {
-      movies: trending,
-      pageTitle: "Trending",
-      path: "/movies/trending",
-      baseUrl: "https://image.tmdb.org/t/p/w200",
-      page: page,
-      totalPage: totalPage,
+    paging(movies, page, (trending, totalPage) => {
+      res.render("movies/trending", {
+        movies: trending,
+        pageTitle: "Trending",
+        path: "/movies/trending",
+        baseUrl: "https://image.tmdb.org/t/p/w200",
+        page: page,
+        totalPage: totalPage,
+      });
     });
   });
 };
@@ -34,13 +39,15 @@ exports.getTopRate = (req, res, next) => {
   }
   Movie.fetchAll((movies) => {
     movies.sort((a, b) => b.vote_average - a.vote_average);
-    const topRate = movies.slice((page - 1) * 4, 4 * page);
-    res.render("movies/trending", {
-      movies: topRate,
-      pageTitle: "Top Rate",
-      path: "/movies/top-rate",
-      baseUrl: "https://image.tmdb.org/t/p/w200",
-      page: page,
+    paging(movies, page, (topRate, totalPage) => {
+      res.render("movies/trending", {
+        movies: topRate,
+        pageTitle: "Top Rate",
+        path: "/movies/top-rate",
+        baseUrl: "https://image.tmdb.org/t/p/w200",
+        page: page,
+        totalPage: totalPage,
+      });
     });
   });
 };
@@ -65,16 +72,15 @@ exports.getResult = (req, res, next) => {
     page = +page;
   }
   Movie.findByGenre(genreId, (movies) => {
-    const totalPage = movies.length / 16;
-    console.log(totalPage);
-    const discover = movies.slice((page - 1) * 16, 16 * page);
-    res.render("movies/trending", {
-      movies: discover,
-      pageTitle: "Discover",
-      path: `/movies/discover/${genreId}`,
-      baseUrl: "https://image.tmdb.org/t/p/w200",
-      page: page,
-      totalPage: totalPage,
+    paging(movies, page, (discover, totalPage) => {
+      res.render("movies/trending", {
+        movies: discover,
+        pageTitle: "Discover",
+        path: `/movies/discover/${genreId}`,
+        baseUrl: "https://image.tmdb.org/t/p/w200",
+        page: page,
+        totalPage: totalPage,
+      });
     });
   });
 };
