@@ -18,14 +18,20 @@ exports.getTrending = (req, res, next) => {
   Movie.fetchAll((movies) => {
     movies.sort((a, b) => b.popularity - a.popularity);
     paging(movies, page, (trending, totalPage) => {
-      res.render("movies/trending", {
-        movies: trending,
-        pageTitle: "Trending",
-        path: "/movies/trending",
-        baseUrl: "https://image.tmdb.org/t/p/w200",
+      // res.render("movies/trending", {
+      //   movies: [...trending],
+      //   pageTitle: "Trending",
+      //   path: "/movies/trending",
+      //   baseUrl: "https://image.tmdb.org/t/p/w200",
+      //   page: page,
+      //   totalPage: totalPage,
+      // });
+      const data = {
+        results: [...trending],
         page: page,
-        totalPage: totalPage,
-      });
+        total_pages: totalPage,
+      };
+      res.status(200).json(data);
     });
   });
 };
@@ -40,14 +46,20 @@ exports.getTopRate = (req, res, next) => {
   Movie.fetchAll((movies) => {
     movies.sort((a, b) => b.vote_average - a.vote_average);
     paging(movies, page, (topRate, totalPage) => {
-      res.render("movies/trending", {
-        movies: topRate,
-        pageTitle: "Top Rate",
-        path: "/movies/top-rate",
-        baseUrl: "https://image.tmdb.org/t/p/w200",
+      // res.render("movies/trending", {
+      //   movies: topRate,
+      //   pageTitle: "Top Rate",
+      //   path: "/movies/top-rate",
+      //   baseUrl: "https://image.tmdb.org/t/p/w200",
+      //   page: page,
+      //   totalPage: totalPage,
+      // });
+      const data = {
+        results: [...topRate],
         page: page,
-        totalPage: totalPage,
-      });
+        total_pages: totalPage,
+      };
+      res.status(200).json(data);
     });
   });
 };
@@ -64,7 +76,7 @@ exports.getDiscover = (req, res, next) => {
 };
 
 exports.getResult = (req, res, next) => {
-  const genreId = req.params.genreId;
+  const genreId = req.query.genreId;
   let page = req.query.page;
   if (!page) {
     page = 1;
@@ -73,14 +85,20 @@ exports.getResult = (req, res, next) => {
   }
   Movie.findByGenre(genreId, (movies) => {
     paging(movies, page, (discover, totalPage) => {
-      res.render("movies/trending", {
-        movies: discover,
-        pageTitle: "Discover",
-        path: `/movies/discover/${genreId}`,
-        baseUrl: "https://image.tmdb.org/t/p/w200",
+      // res.render("movies/trending", {
+      //   movies: discover,
+      //   pageTitle: "Discover",
+      //   path: `/movies/discover/${genreId}`,
+      //   baseUrl: "https://image.tmdb.org/t/p/w200",
+      //   page: page,
+      //   totalPage: totalPage,
+      // });
+      const data = {
+        results: [...discover],
         page: page,
-        totalPage: totalPage,
-      });
+        total_pages: totalPage,
+      };
+      res.status(200).json(data);
     });
   });
 };

@@ -31,9 +31,9 @@ module.exports = class Movie {
     Genre.fetchGenre((genre) => {
       const selectedGenre = genre.find((g) => g.id === +genreId);
       getMoviesFromFile((movies) => {
-        const result = movies.filter((movie) =>
-          movie.genre_ids.includes(selectedGenre.id)
-        );
+        const result = movies.filter((movie) => {
+          return movie.genre_ids.indexOf(selectedGenre.id) !== -1;
+        });
         cb(result);
       });
     });

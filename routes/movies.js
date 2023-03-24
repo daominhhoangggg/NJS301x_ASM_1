@@ -12,7 +12,7 @@ router.get("/movies/top-rate", moviesController.getTopRate);
 
 router.get("/movies/discover/:genreId", moviesController.getResult);
 
-router.get("/movies/discover", moviesController.getDiscover);
+router.get("/movies/discover", moviesController.getResult);
 
 router.get("/movies/video");
 
