@@ -14,7 +14,7 @@ const getMoviesFromFile = (cb) => {
     if (err) {
       cb([]);
     } else {
-      const movies = JSON.parse(fileContent).filter(
+      const movies = JSON.parse(fileContent, "utf8").filter(
         (movie) => movie.media_type === "movie"
       );
       cb(movies);
@@ -30,12 +30,14 @@ module.exports = class Movie {
   static findByGenre(genreId, cb) {
     Genre.fetchGenre((genre) => {
       const selectedGenre = genre.find((g) => g.id === +genreId);
-      getMoviesFromFile((movies) => {
-        const result = movies.filter((movie) => {
-          return movie.genre_ids.indexOf(selectedGenre.id) !== -1;
+      if (selectedGenre) {
+        getMoviesFromFile((movies) => {
+          const result = movies.filter((movie) => {
+            return movie.genre_ids.indexOf(selectedGenre.id) !== -1;
+          });
+          cb(result, selectedGenre.name);
         });
-        cb(result);
-      });
+      }
     });
   }
 

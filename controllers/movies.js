@@ -83,7 +83,7 @@ exports.getResult = (req, res, next) => {
   } else {
     page = +page;
   }
-  Movie.findByGenre(genreId, (movies) => {
+  Movie.findByGenre(genreId, (movies, genreName) => {
     paging(movies, page, (discover, totalPage) => {
       // res.render("movies/trending", {
       //   movies: discover,
@@ -97,6 +97,7 @@ exports.getResult = (req, res, next) => {
         results: [...discover],
         page: page,
         total_pages: totalPage,
+        genre_name: genreName,
       };
       res.status(200).json(data);
     });

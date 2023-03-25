@@ -7,7 +7,7 @@ const getFromFile = (cb, file) => {
     if (err) {
       cb([]);
     } else {
-      cb(JSON.parse(fileContent));
+      cb(JSON.parse(fileContent, "utf8"));
     }
   });
 };
