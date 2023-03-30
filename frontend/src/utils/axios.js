@@ -13,5 +13,6 @@ const instance = axios.create({
 
 // instance.get('/foo-bar');
 // https://api.themoviedb.org/3/foo-bar
+// http://localhost:5000/api/movies/video?token=8qlOkxz4wq&movieId=361743
 
 export default instance;

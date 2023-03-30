@@ -122,27 +122,42 @@ exports.postMovietrailer = (req, res, next) => {
     res.status(400).send({ message: "Not found film_id parram" });
   } else {
     Genre.fetchTrailer(+movieId, (trailers) => {
-      if (trailers) {
-        const trailer = trailers.videos
-          .filter((video) => {
+      if (trailers.videos.length === 0) {
+        res.status(404).json({ message: "Not found video" });
+      } else {
+        //Get Trailer
+        let trailer = trailers.videos.filter((video) => {
+          return (
+            video.site === "YouTube" &&
+            video.official &&
+            video.type === "Trailer"
+          );
+        });
+
+        //If no trailer, get teaser
+        if (Object.values(trailer).length === 0) {
+          trailer = trailers.videos.filter((video) => {
             return (
               video.site === "YouTube" &&
               video.official &&
-              video.type === "Trailer"
+              video.type === "Teaser"
             );
-          })
-          .sort((a, b) => {
-            const dateA = new Date(a.published_at);
-            const dateB = new Date(b.published_at);
-            return dateB - dateA;
           });
+        }
+
+        //Sort latest
+        trailer.sort((a, b) => {
+          const dateA = new Date(a.published_at);
+          const dateB = new Date(b.published_at);
+          return dateB - dateA;
+        });
+
+        //Response
         const data = {
           id: movieId,
           video: trailer[0],
         };
         res.status(200).json(data);
-      } else {
-        res.status(404).send({ message: "Not found video" });
       }
     });
   }

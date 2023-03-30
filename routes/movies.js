@@ -12,8 +12,6 @@ router.get("/trending", moviesController.getTrending);
 
 router.get("/top-rate", moviesController.getTopRate);
 
-router.get("/discover/:genreId", moviesController.getResult);
-
 router.get("/discover", moviesController.getResult);
 
 router.post("/video", moviesController.postMovietrailer);
