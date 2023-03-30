@@ -3,13 +3,8 @@ const path = require("path");
 
 const Genre = require("./genre");
 
-const p = path.join(
-  path.dirname(process.mainModule.filename),
-  "data",
-  "movieList.json"
-);
-
-const getMoviesFromFile = (cb) => {
+const getFromFile = (file, cb) => {
+  const p = path.join(path.dirname(process.mainModule.filename), "data", file);
   fs.readFile(p, (err, fileContent) => {
     if (err) {
       cb([]);
@@ -24,25 +19,41 @@ const getMoviesFromFile = (cb) => {
 
 module.exports = class Movie {
   static fetchAll(cb) {
-    getMoviesFromFile(cb);
+    getFromFile("movieList.json", cb);
+  }
+
+  static search(keyword, cb) {
+    if (keyword) {
+      getFromFile("movieList.json", (movies) => {
+        const content = movies.filter((movie) => {
+          return (
+            movie.title.toLowerCase().includes(keyword.toLowerCase()) ||
+            movie.overview.toLowerCase().includes(keyword.toLowerCase())
+          );
+        });
+        cb(content);
+      });
+    }
   }
 
   static findByGenre(genreId, cb) {
     Genre.fetchGenre((genre) => {
       const selectedGenre = genre.find((g) => g.id === +genreId);
       if (selectedGenre) {
-        getMoviesFromFile((movies) => {
+        getFromFile("movieList.json", (movies) => {
           const result = movies.filter((movie) => {
             return movie.genre_ids.indexOf(selectedGenre.id) !== -1;
           });
           cb(result, selectedGenre.name);
         });
+      } else {
+        cb([], null);
       }
     });
   }
 
   static findById(id, cb) {
-    getMoviesFromFile((movies) => {
+    getFromFile("movieList.json", (movies) => {
       const movie = movies.find((m) => m.id === id);
       cb(movie);
     });

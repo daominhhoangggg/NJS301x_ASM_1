@@ -6,14 +6,18 @@ const moviesController = require("../controllers/movies");
 
 const router = express.Router();
 
-router.get("/movies/trending", moviesController.getTrending);
+router.get("/latest", moviesController.getLatest);
 
-router.get("/movies/top-rate", moviesController.getTopRate);
+router.get("/trending", moviesController.getTrending);
 
-router.get("/movies/discover/:genreId", moviesController.getResult);
+router.get("/top-rate", moviesController.getTopRate);
 
-router.get("/movies/discover", moviesController.getResult);
+router.get("/discover/:genreId", moviesController.getResult);
 
-router.get("/movies/video");
+router.get("/discover", moviesController.getResult);
+
+router.post("/video", moviesController.postMovietrailer);
+
+router.post("/search", moviesController.postSearch);
 
 module.exports = router;

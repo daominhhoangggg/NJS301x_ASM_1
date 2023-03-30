@@ -9,6 +9,7 @@
         <% if (movies.length > 0) { %>
             <div class="grid">
                 <% for (let movie of movies) { %>
+                <a href="/<%= movie.id %>" style="text-decoration: none; color: black;">
                     <article class="card product-item">
                         <header class="card__header">
                             <h1 class="product__title"><%= movie.title %></h1>
@@ -22,6 +23,7 @@
                             <p class="product__description truncate"><%= movie.overview %></p>
                         </div>
                     </article>
+                </a>
                 <% } %>
             </div>
         <% } else { %>
