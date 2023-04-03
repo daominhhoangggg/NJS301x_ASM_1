@@ -1,5 +1,6 @@
 const Movie = require("../models/movie");
 const Genre = require("../models/genre");
+const Video = require("../models/video");
 
 const paging = (movies, page, cb) => {
   const totalPage = Math.ceil(movies.length / 16);
@@ -121,7 +122,7 @@ exports.postMovietrailer = (req, res, next) => {
   if (!movieId) {
     res.status(400).send({ message: "Not found film_id parram" });
   } else {
-    Genre.fetchTrailer(+movieId, (trailers) => {
+    Video.fetchTrailer(+movieId, (trailers) => {
       if (trailers.videos.length === 0) {
         res.status(404).json({ message: "Not found video" });
       } else {

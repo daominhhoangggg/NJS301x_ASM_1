@@ -12,8 +12,11 @@ const getFromFile = (file, cb) => {
   });
 };
 
-module.exports = class Genre {
-  static fetchGenre(cb) {
-    getFromFile("genreList.json", cb);
+module.exports = class Video {
+  static fetchTrailer(id, cb) {
+    getFromFile("videoList.json", (videos) => {
+      const trailers = videos.find((v) => v.id === id);
+      cb(trailers);
+    });
   }
 };
